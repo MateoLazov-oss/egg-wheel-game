@@ -3,29 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Egg Gacha Spin Wheel - Official Sweepstakes</title>
-    <!-- Canva iFrame Embed Fix Headers -->
-    <meta http-equiv="X-Frame-Options" content="ALLOWALL">
+    <title>Egg Gacha Wheel - Official Sweepstakes</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         :root {
-            --bg-grad-start: #e0f2fe;
-            --bg-grad-end: #bae6fd;
-            --card-bg: rgba(255, 255, 255, 0.92);
+            --bg-main: #f0f9ff;
+            --card-bg: rgba(255, 255, 255, 0.95);
             --primary: #0284c7;
-            --primary-hover: #0369a1;
+            --primary-dark: #0369a1;
             --accent: #38bdf8;
-            --text-dark: #0f172a;
+            --text-main: #0f172a;
             --text-muted: #475569;
-            --border: #cbd5e1;
-            --shadow: 0 10px 25px -5px rgba(2, 132, 199, 0.15);
+            --border-color: #cbd5e1;
+            --shadow-lg: 0 10px 25px -5px rgba(2, 132, 199, 0.15);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+
         body {
-            background: linear-gradient(135deg, var(--bg-grad-start), var(--bg-grad-end));
-            color: var(--text-dark);
+            background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+            color: var(--text-main);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -43,13 +40,13 @@
             font-size: 2.2rem;
             text-transform: uppercase;
             letter-spacing: 1px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            font-weight: 800;
         }
 
         p.subtitle {
             color: var(--text-muted);
             font-size: 0.95rem;
-            margin-top: 5px;
+            margin-top: 4px;
         }
 
         .main-container {
@@ -66,20 +63,20 @@
             background: var(--card-bg);
             border-radius: 20px;
             padding: 20px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border);
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
             align-items: center;
             position: relative;
-            flex: 1 1 450px;
+            flex: 1 1 420px;
             max-width: 500px;
         }
 
         .wheel-wrapper {
             position: relative;
-            width: 340px;
-            height: 340px;
+            width: 320px;
+            height: 320px;
             margin: 15px 0;
         }
 
@@ -92,14 +89,14 @@
 
         .pointer {
             position: absolute;
-            top: -15px;
+            top: -12px;
             left: 50%;
             transform: translateX(-50%);
             width: 0;
             height: 0;
-            border-left: 15px solid transparent;
-            border-right: 15px solid transparent;
-            border-top: 25px solid #0f172a;
+            border-left: 14px solid transparent;
+            border-right: 14px solid transparent;
+            border-top: 24px solid #0f172a;
             z-index: 10;
             filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
         }
@@ -133,10 +130,10 @@
             background: var(--card-bg);
             border-radius: 20px;
             padding: 20px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border);
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-color);
             flex: 1 1 300px;
-            max-width: 400px;
+            max-width: 420px;
             width: 100%;
         }
 
@@ -144,7 +141,7 @@
             color: var(--primary);
             font-size: 1.3rem;
             margin-bottom: 15px;
-            border-bottom: 2px solid var(--bg-grad-end);
+            border-bottom: 2px solid #e2e8f0;
             padding-bottom: 8px;
         }
 
@@ -156,7 +153,7 @@
 
         .egg-item {
             background: #f8fafc;
-            border: 1px solid var(--border);
+            border: 1px solid var(--border-color);
             border-radius: 12px;
             padding: 10px;
             display: flex;
@@ -186,7 +183,7 @@
         .egg-name {
             font-size: 0.85rem;
             font-weight: bold;
-            color: var(--text-dark);
+            color: var(--text-main);
         }
 
         .egg-count {
@@ -259,14 +256,14 @@
             background: white;
             padding: 20px;
             border-radius: 12px;
-            border: 1px solid var(--border);
+            border: 1px solid var(--border-color);
             font-size: 0.8rem;
             color: var(--text-muted);
             line-height: 1.5;
         }
 
         footer.rules-footer h3 {
-            color: var(--text-dark);
+            color: var(--text-main);
             font-size: 0.9rem;
             margin-bottom: 8px;
         }
@@ -283,7 +280,7 @@
         <div class="game-card">
             <div class="wheel-wrapper">
                 <div class="pointer"></div>
-                <canvas id="wheelCanvas" width="340" height="340"></canvas>
+                <canvas id="wheelCanvas" width="320" height="320"></canvas>
             </div>
             <button class="spin-btn" id="spinBtn" onclick="spinWheel()">SPIN WHEEL</button>
         </div>
@@ -339,23 +336,23 @@
             const numSlices = EGGS.length;
             const sliceAngle = (2 * Math.PI) / numSlices;
 
-            ctx.clearRect(0, 0, 340, 340);
+            ctx.clearRect(0, 0, 320, 320);
             
             EGGS.forEach((egg, i) => {
                 const angle = startAngle + i * sliceAngle;
                 ctx.beginPath();
                 ctx.fillStyle = egg.color;
-                ctx.moveTo(170, 170);
-                ctx.arc(170, 170, 160, angle, angle + sliceAngle);
+                ctx.moveTo(160, 160);
+                ctx.arc(160, 160, 150, angle, angle + sliceAngle);
                 ctx.fill();
                 ctx.stroke();
 
                 ctx.save();
-                ctx.translate(170, 170);
+                ctx.translate(160, 160);
                 ctx.rotate(angle + sliceAngle / 2);
                 ctx.fillStyle = "#ffffff";
-                ctx.font = "bold 12px sans-serif";
-                ctx.fillText(egg.name.split(' ')[0], 80, 5);
+                ctx.font = "bold 11px sans-serif";
+                ctx.fillText(egg.name.split(' ')[0], 75, 4);
                 ctx.restore();
             });
         }
