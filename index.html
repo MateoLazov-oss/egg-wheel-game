@@ -3,965 +3,464 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Egg Gacha - Official Contest & Wheel</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Orbitron:wght@600;800;900&display=swap" rel="stylesheet">
-    
+    <title>Egg Gacha Spin Wheel - Official Sweepstakes</title>
+    <!-- Canva iFrame Embed Fix Headers -->
+    <meta http-equiv="X-Frame-Options" content="ALLOWALL">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
+        :root {
+            --bg-grad-start: #e0f2fe;
+            --bg-grad-end: #bae6fd;
+            --card-bg: rgba(255, 255, 255, 0.92);
+            --primary: #0284c7;
+            --primary-hover: #0369a1;
+            --accent: #38bdf8;
+            --text-dark: #0f172a;
+            --text-muted: #475569;
+            --border: #cbd5e1;
+            --shadow: 0 10px 25px -5px rgba(2, 132, 199, 0.15);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
         body {
-            font-family: 'Inter', sans-serif;
-            user-select: none;
-            -webkit-user-select: none;
+            background: linear-gradient(135deg, var(--bg-grad-start), var(--bg-grad-end));
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 10px;
         }
 
-        .font-orbitron {
-            font-family: 'Orbitron', sans-serif;
+        header {
+            text-align: center;
+            margin-bottom: 20px;
         }
 
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #E2E8F0;
-            border-radius: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #94A3B8;
-            border-radius: 4px;
+        h1 {
+            color: var(--primary);
+            font-size: 2.2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
 
-        /* Pointer Bounce Animation */
-        @keyframes pointer-bounce {
-            0% { transform: translateX(-50%) rotate(0deg); }
-            30% { transform: translateX(-50%) rotate(-18deg); }
-            100% { transform: translateX(-50%) rotate(0deg); }
-        }
-        .pointer-tick {
-            animation: pointer-bounce 0.12s ease-out;
-            transform-origin: top center;
+        p.subtitle {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-top: 5px;
         }
 
-        /* Egg Idle Floating Animation */
-        @keyframes egg-float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-10px) rotate(1.5deg); }
-        }
-        .animate-egg-float {
-            animation: egg-float 3s ease-in-out infinite;
+        .main-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            max-width: 1000px;
+            width: 100%;
+            justify-content: center;
+            align-items: flex-start;
         }
 
-        /* Shake Animations for Egg Hatch Stage */
-        @keyframes shake-gentle {
-            0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            25% { transform: translate(-3px, 2px) rotate(-2deg); }
-            75% { transform: translate(3px, -2px) rotate(2deg); }
-        }
-        .shake-common { animation: shake-gentle 0.3s ease-in-out infinite; }
-
-        @keyframes shake-medium {
-            0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            20% { transform: translate(-6px, 4px) rotate(-4deg); }
-            60% { transform: translate(6px, -4px) rotate(4deg); }
-        }
-        .shake-medium-cls { animation: shake-medium 0.2s ease-in-out infinite; }
-
-        @keyframes shake-intense {
-            0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1); }
-            10% { transform: translate(-10px, 8px) rotate(-8deg) scale(1.02); }
-            30% { transform: translate(10px, -8px) rotate(8deg) scale(0.98); }
-            50% { transform: translate(-12px, -6px) rotate(-10deg) scale(1.05); }
-            70% { transform: translate(12px, 6px) rotate(10deg) scale(0.95); }
-        }
-        .shake-intense-cls { animation: shake-intense 0.12s ease-in-out infinite; }
-
-        /* Malevolous God Tremor Animation */
-        @keyframes malevolous-tremor {
-            0%, 100% { transform: translate(0, 0) scale(1); filter: drop-shadow(0 0 15px rgba(37, 99, 235, 0.8)); }
-            10% { transform: translate(-16px, 12px) scale(1.08) rotate(-5deg); }
-            30% { transform: translate(16px, -12px) scale(0.92) rotate(5deg); }
-            50% { transform: translate(-20px, -8px) scale(1.12) rotate(-8deg); }
-            70% { transform: translate(20px, 8px) scale(0.88) rotate(8deg); }
-        }
-        .malevolous-tremor-cls { animation: malevolous-tremor 0.08s ease-in-out infinite; }
-
-        /* Glitch Warning Screen */
-        @keyframes glitch-flash {
-            0%, 100% { opacity: 0.95; }
-            50% { opacity: 0.4; }
-        }
-        .animate-glitch { animation: glitch-flash 0.15s infinite; }
-
-        /* Blue Shimmer Effect on Action Buttons */
-        .shimmer-btn {
+        .game-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             position: relative;
-            overflow: hidden;
+            flex: 1 1 450px;
+            max-width: 500px;
         }
-        .shimmer-btn::after {
-            content: '';
+
+        .wheel-wrapper {
+            position: relative;
+            width: 340px;
+            height: 340px;
+            margin: 15px 0;
+        }
+
+        #wheelCanvas {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(2, 132, 199, 0.2);
+        }
+
+        .pointer {
             position: absolute;
-            top: -50%; left: -50%; width: 200%; height: 200%;
-            background: linear-gradient(60deg, rgba(255,255,255,0) 20%, rgba(255,255,255,0.45) 50%, rgba(255,255,255,0) 80%);
-            transform: rotate(30deg) translateY(-100%);
-            transition: transform 0.6s;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-top: 25px solid #0f172a;
+            z-index: 10;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
         }
-        .shimmer-btn:hover::after {
-            transform: rotate(30deg) translateY(100%);
+
+        .spin-btn {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            border: none;
+            padding: 14px 40px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px rgba(2, 132, 199, 0.4);
+            margin-top: 10px;
+        }
+
+        .spin-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(2, 132, 199, 0.5);
+        }
+
+        .spin-btn:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .inventory-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            flex: 1 1 300px;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .inventory-card h2 {
+            color: var(--primary);
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            border-bottom: 2px solid var(--bg-grad-end);
+            padding-bottom: 8px;
+        }
+
+        .egg-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .egg-item {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            opacity: 0.4;
+            transition: all 0.3s ease;
+        }
+
+        .egg-item.unlocked {
+            opacity: 1;
+            background: #ffffff;
+            border-color: var(--accent);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .egg-icon-preview {
+            width: 35px;
+            height: 45px;
+        }
+
+        .egg-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .egg-name {
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: var(--text-dark);
+        }
+
+        .egg-count {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* Modal / Hatching Stage */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(15, 23, 42, 0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .hatch-box {
+            background: white;
+            border-radius: 24px;
+            padding: 30px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .hatch-egg-container {
+            width: 120px;
+            height: 160px;
+            margin: 20px 0;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .hatch-egg-canvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        .hatch-instruction {
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: var(--primary);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.7; }
+        }
+
+        /* Rules Footer */
+        footer.rules-footer {
+            margin-top: 40px;
+            max-width: 900px;
+            width: 100%;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        footer.rules-footer h3 {
+            color: var(--text-dark);
+            font-size: 0.9rem;
+            margin-bottom: 8px;
         }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col justify-between p-3 sm:p-6 selection:bg-blue-600 selection:text-white">
+<body>
 
-    <div class="w-full max-w-5xl mx-auto flex flex-col items-center flex-1">
-        
-        <!-- App Header -->
-        <div class="w-full flex justify-between items-center mb-5 px-2">
-            <div class="flex items-center space-x-3">
-                <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-blue-700 via-blue-600 to-sky-400 flex items-center justify-center text-white shadow-md shadow-blue-500/20 text-2xl font-black">
-                    🥚
-                </div>
-                <div>
-                    <h1 class="text-xl sm:text-2xl font-black font-orbitron text-blue-900 tracking-wider">
-                        EGG GACHA CHALLENGE
-                    </h1>
-                    <p class="text-xs text-slate-500 font-medium hidden sm:block">Spin to collect all 7 eggs & win the Official Poster!</p>
-                </div>
+    <header>
+        <h1>Egg Gacha Wheel</h1>
+        <p class="subtitle">Spin to collect rare eggs & complete your collection!</p>
+    </header>
+
+    <div class="main-container">
+        <div class="game-card">
+            <div class="wheel-wrapper">
+                <div class="pointer"></div>
+                <canvas id="wheelCanvas" width="340" height="340"></canvas>
             </div>
-
-            <!-- Header Action Buttons -->
-            <div class="flex items-center space-x-2">
-                <button id="soundToggleBtn" onclick="toggleSound()" class="bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 p-2.5 rounded-xl shadow-sm transition-all flex items-center justify-center text-sm font-semibold">
-                    <i id="soundIcon" class="fas fa-volume-up text-blue-600 w-5"></i>
-                </button>
-
-                <button onclick="toggleInventoryModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl shadow-md shadow-blue-500/20 transition-all flex items-center space-x-2 text-sm font-bold border border-blue-400/30">
-                    <i class="fas fa-box-open"></i>
-                    <span>Collection</span>
-                    <span id="collectionBadge" class="bg-white text-blue-800 text-xs px-2 py-0.5 rounded-full font-black ml-1 shadow-sm">0/7</span>
-                </button>
-            </div>
+            <button class="spin-btn" id="spinBtn" onclick="spinWheel()">SPIN WHEEL</button>
         </div>
 
-        <div id="setCompletedBanner" class="w-full bg-gradient-to-r from-blue-900 via-blue-800 to-indigo-900 text-white rounded-2xl p-4 mb-5 shadow-lg border border-blue-400/30 hidden flex flex-col sm:flex-row items-center justify-between gap-3">
-            <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-xl bg-amber-400 text-slate-950 flex items-center justify-center text-xl font-black">🏆</div>
-                <div>
-                    <h4 class="font-orbitron font-bold text-sm sm:text-base text-amber-300">COLLECTION COMPLETE! YOU QUALIFY FOR THE POSTER</h4>
-                    <p class="text-xs text-blue-100">Claim Code: <span id="claimCodeText" class="font-mono font-bold text-white bg-blue-950/60 px-2 py-0.5 rounded border border-blue-400/40">G-POSTER-WINNER</span></p>
-                </div>
-            </div>
-            <button onclick="openRulesModal()" class="bg-amber-400 hover:bg-amber-300 text-slate-950 px-4 py-2 rounded-xl font-black text-xs font-orbitron uppercase tracking-wider shadow transition-all whitespace-nowrap">
-                Claim Instructions
-            </button>
-        </div>
-
-        <div class="w-full bg-white border border-slate-200 rounded-3xl p-4 sm:p-8 shadow-xl flex flex-col lg:flex-row items-center justify-center gap-8 relative overflow-hidden mb-8">
-            
-            <!-- Wheel Container -->
-            <div class="relative flex flex-col items-center justify-center">
-                <div class="absolute inset-0 rounded-full bg-gradient-to-tr from-blue-100 via-sky-50 to-blue-200 blur-2xl scale-110 pointer-events-none"></div>
-
-                <!-- Pointer Arrow -->
-                <div id="wheelPointer" class="absolute -top-3 left-1/2 -translate-x-1/2 z-30 filter drop-shadow-md transition-transform">
-                    <svg width="42" height="48" viewBox="0 0 42 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M21 48L2.81837 12C0.183791 6.82281 3.93175 0.75 9.73686 0.75L31.2631 0.750002 C37.0683 0.750002 40.8162 6.82282 38.1816 12L21 48Z" fill="#1D4ED8"/>
-                        <path d="M21 42L6.282 13C4.168 8.86 7.166 4 11.81 4H29.19 C33.834 4 36.832 8.86 34.718 13L21 42Z" fill="#60A5FA"/>
-                    </svg>
-                </div>
-
-                <!-- Canvas Circle -->
-                <div class="relative rounded-full border-8 border-slate-100 bg-white shadow-2xl p-1">
-                    <canvas id="wheelCanvas" width="420" height="420" class="w-[290px] h-[290px] sm:w-[380px] sm:h-[380px] cursor-pointer rounded-full transition-all"></canvas>
-
-                    <!-- Center Spin Button -->
-                    <button id="centerSpinBtn" onclick="spinWheel()" class="shimmer-btn absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-tr from-blue-700 via-blue-600 to-sky-400 text-white rounded-full border-4 border-white shadow-xl flex flex-col items-center justify-center font-black text-xs sm:text-sm tracking-wider uppercase transform active:scale-95 hover:scale-105 transition-all">
-                        <span>SPIN</span>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Side Odds & Action Panel -->
-            <div class="w-full lg:w-80 flex flex-col items-center lg:items-start space-y-4">
-                <button id="mainSpinBtn" onclick="spinWheel()" class="w-full shimmer-btn bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 hover:from-blue-500 hover:to-indigo-600 text-white font-black text-lg py-4 px-6 rounded-2xl shadow-lg shadow-blue-500/20 transform active:scale-95 transition-all flex items-center justify-center space-x-2 font-orbitron border border-blue-400/30">
-                    <i class="fas fa-egg text-xl"></i>
-                    <span>SPIN FOR EGG</span>
-                </button>
-
-                <!-- Probability Chart -->
-                <div class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-4 shadow-inner">
-                    <div class="flex justify-between items-center mb-3 border-b border-slate-200 pb-2">
-                        <span class="text-slate-500 text-xs font-bold uppercase tracking-wider font-orbitron">Egg Rarity Drop Odds</span>
-                        <span id="totalSpinsCount" class="text-blue-700 font-bold text-xs">Spins: 0</span>
-                    </div>
-
-                    <div id="oddsList" class="space-y-2 max-h-60 overflow-y-auto custom-scrollbar pr-1">
-                        <!-- Populated dynamically via JavaScript -->
-                    </div>
-                </div>
-            </div>
+        <div class="inventory-card">
+            <h2>Egg Vault (<span id="vaultCount">0</span>/7)</h2>
+            <div class="egg-grid" id="eggGrid"></div>
         </div>
     </div>
 
-    <div id="inventoryModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white border border-slate-200 rounded-3xl w-full max-w-xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
-            <div class="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-                <div class="flex items-center space-x-2">
-                    <i class="fas fa-box-open text-blue-600 text-xl"></i>
-                    <h3 class="text-lg font-black text-slate-900 font-orbitron">Egg Vault & Set Progress</h3>
-                </div>
-                <button onclick="toggleInventoryModal()" class="text-slate-400 hover:text-slate-700 p-2 rounded-xl hover:bg-slate-200 transition-colors">
-                    <i class="fas fa-times text-lg"></i>
-                </button>
+    <!-- Hatch Modal -->
+    <div class="modal-overlay" id="hatchModal">
+        <div class="hatch-box">
+            <h2 id="modalTitle">You Found An Egg!</h2>
+            <div class="hatch-egg-container" onclick="hatchEgg()">
+                <canvas id="hatchCanvas" class="hatch-egg-canvas" width="120" height="160"></canvas>
             </div>
-
-            <div class="p-5 overflow-y-auto custom-scrollbar flex-1">
-                <div id="inventoryGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                    <!-- Populated dynamically -->
-                </div>
-            </div>
-
-            <div class="p-4 border-t border-slate-100 bg-slate-50 flex justify-between items-center">
-                <span id="totalHatchedText" class="text-xs font-bold text-slate-500 font-orbitron">Unique Unlocked: 0/7</span>
-                <button onclick="toggleInventoryModal()" class="bg-slate-800 hover:bg-slate-700 text-white font-bold py-2 px-5 rounded-xl transition-all text-xs">
-                    Close
-                </button>
-            </div>
+            <div class="hatch-instruction" id="hatchPrompt">CLICK EGG TO HATCH!</div>
+            <button class="spin-btn" id="claimBtn" style="display:none;" onclick="closeModal()">COLLECT EGG</button>
         </div>
     </div>
 
-    <div id="hatchCutsceneModal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-xl z-50 flex flex-col items-center justify-center p-4 hidden overflow-hidden">
-        
-        <!-- Canvas for particle bursts -->
-        <canvas id="hatchFxCanvas" class="absolute inset-0 pointer-events-none z-10 w-full h-full"></canvas>
-
-        <!-- Glitch Overlay Frame for Malevolous G Egg -->
-        <div id="godGlitchOverlay" class="absolute inset-0 pointer-events-none z-20 bg-blue-950/40 hidden flex flex-col justify-between p-6 border-8 border-blue-500/60">
-            <div class="w-full bg-blue-600 text-white text-center py-2 font-black font-orbitron text-xs sm:text-sm tracking-widest uppercase animate-glitch shadow-lg shadow-blue-500/50">
-                ⚠️ NOTICE: ANCIENT MALEVOLEOUS G™ ENTITY UNLOCKED ⚠️
-            </div>
-            <div class="w-full bg-blue-600 text-white text-center py-2 font-black font-orbitron text-xs sm:text-sm tracking-widest uppercase animate-glitch shadow-lg shadow-blue-500/50">
-                ⚠️ PRIZE QUALIFICATION CONFIRMED ⚠️
-            </div>
-        </div>
-
-        <!-- Stage 1: Tap To Hatch Interactive Egg Container -->
-        <div id="eggStageContainer" class="relative z-30 flex flex-col items-center justify-center cursor-pointer max-w-md text-center">
-            
-            <span id="hatchStatusText" class="text-blue-300 font-orbitron text-xs sm:text-sm font-black tracking-widest uppercase mb-4 animate-pulse">
-                ✨ TAP EGG TO CRACK OPEN ✨
-            </span>
-
-            <div id="eggVisualFrame" class="relative w-48 h-56 sm:w-60 sm:h-72 flex items-center justify-center transition-transform animate-egg-float">
-                <div id="eggBackGlow" class="absolute inset-0 rounded-full blur-3xl opacity-60"></div>
-                
-                <div id="eggSvgHolder" class="w-full h-full relative z-10 filter drop-shadow-2xl">
-                    <!-- Dynamic Egg SVG -->
-                </div>
-            </div>
-
-            <div class="w-48 sm:w-60 bg-slate-900 border border-slate-700 h-3 rounded-full mt-6 overflow-hidden p-0.5">
-                <div id="crackProgressBar" class="h-full bg-gradient-to-r from-blue-500 to-sky-300 rounded-full w-0 transition-all duration-150"></div>
-            </div>
-        </div>
-
-        <!-- Stage 2: Post-Hatch Card Reveal -->
-        <div id="revealCardContainer" class="relative z-30 max-w-sm w-full bg-white border border-slate-200 rounded-3xl p-6 text-center shadow-2xl hidden transform transition-all scale-90 opacity-0">
-            <div id="revealHeaderGlow" class="absolute -top-12 left-1/2 -translate-x-1/2 w-48 h-48 rounded-full blur-3xl opacity-40 pointer-events-none"></div>
-
-            <div id="revealedEggIcon" class="w-28 h-28 mx-auto mb-4 relative z-10 flex items-center justify-center filter drop-shadow-xl">
-                <!-- SVG Egg -->
-            </div>
-
-            <span id="revealRarityBadge" class="inline-block text-[11px] font-black font-orbitron uppercase tracking-widest px-3 py-1 rounded-full mb-2">
-                COMMON
-            </span>
-
-            <h2 id="revealTitleText" class="text-xl sm:text-2xl font-black font-orbitron text-slate-900 mb-1">Common Egg</h2>
-            <p id="revealChanceText" class="text-xs font-bold text-slate-500 mb-6">Drop Odds: 50%</p>
-
-            <button onclick="closeHatchCutscene()" class="w-full shimmer-btn bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-black font-orbitron py-3.5 px-6 rounded-xl shadow-lg shadow-blue-500/20 transform active:scale-95 transition-all">
-                COLLECT EGG
-            </button>
-        </div>
-    </div>
-
-    <div id="rulesModal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white border border-slate-200 rounded-3xl w-full max-w-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-            <div class="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-                <div class="flex items-center space-x-2">
-                    <i class="fas fa-gavel text-blue-600 text-xl"></i>
-                    <h3 class="text-lg font-black text-slate-900 font-orbitron">Official Contest Rules & Terms of Service</h3>
-                </div>
-                <button onclick="openRulesModal()" class="text-slate-400 hover:text-slate-700 p-2 rounded-xl hover:bg-slate-200 transition-colors">
-                    <i class="fas fa-times text-lg"></i>
-                </button>
-            </div>
-
-            <div class="p-6 overflow-y-auto custom-scrollbar text-xs leading-relaxed text-slate-600 space-y-4">
-                <div class="bg-blue-50 border border-blue-200 p-3 rounded-xl text-blue-900 font-bold font-orbitron">
-                    NO PURCHASE NECESSARY TO ENTER OR WIN. A PURCHASE OR PAYMENT OF ANY KIND WILL NOT INCREASE YOUR CHANCES OF WINNING. VOID WHERE PROHIBITED BY LAW.
-                </div>
-
-                <div>
-                    <h4 class="font-bold text-slate-900 uppercase font-orbitron text-xs mb-1">1. SPONSOR & PROMOTION DESCRIPTION</h4>
-                    <p>The "Egg Gacha Collection Challenge" (the "Sweepstakes") is sponsored by the site administrator ("Sponsor"). By participating in the Sweepstakes, each entrant unconditionally accepts and agrees to comply with and abide by these Official Rules and the decisions of Sponsor, which shall be final and binding in all respects.</p>
-                </div>
-
-                <div>
-                    <h4 class="font-bold text-slate-900 uppercase font-orbitron text-xs mb-1">2. ELIGIBILITY & CONTEST PERIOD</h4>
-                    <p>Open only to legal residents who access this website where allowed by law. Entrants under 18 years of age must have consent from a parent or legal guardian. The promotional period runs continuously while hosted unless terminated earlier by the Sponsor.</p>
-                </div>
-
-                <div>
-                    <h4 class="font-bold text-slate-900 uppercase font-orbitron text-xs mb-1">3. HOW TO WIN: COLLECTION CHALLENGE & PRIZE</h4>
-                    <p>To qualify for the prize, an entrant must legitimately spin the interactive Gacha Wheel and collect at least one (1) of each of the seven (7) designated egg tiers (Common, Uncommon, Rare, Epic, Legendary, Mythic, and The Malevolous and all-powerful G™ Egg) in their Collection Vault without using automated bots, client-side code modification, or fraud.</p>
-                    <p class="mt-1 font-semibold text-slate-800">PRIZE: One (1) physical "The Malevolous and all-powerful G™ Egg" Official Commemorative Poster (Approximate Retail Value "ARV": $25.00 USD).</p>
-                </div>
-
-                <div>
-                    <h4 class="font-bold text-slate-900 uppercase font-orbitron text-xs mb-1">4. VERIFICATION & CLAIM INSTRUCTIONS</h4>
-                    <p>Upon achieving a 7/7 completed collection set, take a screenshot of your Collection Vault alongside your unique session Claim Code displayed in the banner. Submit your verification claim to the official promotional team email or contest portal. All claims are subject to log verification to prevent cheating.</p>
-                </div>
-
-                <div>
-                    <h4 class="font-bold text-slate-900 uppercase font-orbitron text-xs mb-1">5. LIMITATION OF LIABILITY & GENERAL CONDITIONS</h4>
-                    <p>Sponsor reserves the right to cancel, suspend, or modify the Sweepstakes if fraud, technical failures, or any other factor impairs the integrity of the game. Sponsor is not responsible for technical glitches, internet outages, or lost claims. By playing this game, participants release Sponsor from all claims or liabilities arising from participation or prize acceptance.</p>
-                </div>
-            </div>
-
-            <div class="p-4 border-t border-slate-100 bg-slate-50 flex justify-end">
-                <button onclick="openRulesModal()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-6 rounded-xl transition-all text-xs font-orbitron uppercase">
-                    I Understand
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <footer class="w-full max-w-5xl mx-auto bg-white border border-slate-200 rounded-2xl p-4 mt-auto text-slate-500 text-[11px] shadow-sm">
-        <div class="flex flex-col md:flex-row items-center justify-between gap-3">
-            <div class="flex items-center space-x-2 text-slate-700 font-semibold">
-                <i class="fas fa-shield-alt text-blue-600 text-sm"></i>
-                <span>Official Promotional Challenge</span>
-            </div>
-            
-            <p class="text-center md:text-left text-slate-500 leading-snug max-w-2xl">
-                By playing this game, you acknowledge that collecting 1 of every egg tier legitimately unlocks qualification for a physical <strong class="text-slate-800">The Malevolous and all-powerful G™ Egg Poster</strong>. 
-                <strong class="text-slate-700">NO PURCHASE NECESSARY TO ENTER OR WIN.</strong> Void where prohibited.
-            </p>
-
-            <button onclick="openRulesModal()" class="text-blue-600 hover:text-blue-800 font-bold underline whitespace-nowrap text-xs font-orbitron">
-                Official Rules & TOS
-            </button>
-        </div>
+    <footer class="rules-footer">
+        <h3>OFFICIAL RULES & TERMS OF SERVICE</h3>
+        <p><strong>NO PURCHASE NECESSARY TO ENTER OR WIN. A PURCHASE DOES NOT INCREASE YOUR CHANCES OF WINNING.</strong></p>
+        <p>By participating in the Egg Gacha Game, players who legitimately collect all 7 distinct egg types (including Common, Uncommon, Rare, Epic, Legendary, Mythic, and The Malevolous and all-powerful G™ Egg) are eligible to claim one (1) physical commemorative poster. Odds of receiving specific eggs on each spin: Common 50%, Uncommon 30%, Rare 10%, Epic 5%, Legendary 3%, Mythic 1.5%, The Malevolous G™ Egg 0.5%.</p>
     </footer>
 
     <script>
-        const eggData = [
-            { 
-                id: 'common', 
-                label: 'Common Egg', 
-                chance: 50, 
-                color: '#94A3B8', 
-                badgeBg: 'bg-slate-100 text-slate-700 border border-slate-300',
-                glowColor: '#CBD5E1',
-                shakeCls: 'shake-common',
-                crackHitsRequired: 2
-            },
-            { 
-                id: 'uncommon', 
-                label: 'Uncommon Egg', 
-                chance: 30, 
-                color: '#2563EB', 
-                badgeBg: 'bg-blue-50 text-blue-700 border border-blue-200',
-                glowColor: '#60A5FA',
-                shakeCls: 'shake-medium-cls',
-                crackHitsRequired: 3
-            },
-            { 
-                id: 'rare', 
-                label: 'Rare Egg', 
-                chance: 10, 
-                color: '#0284C7', 
-                badgeBg: 'bg-sky-50 text-sky-700 border border-sky-200',
-                glowColor: '#38BDF8',
-                shakeCls: 'shake-medium-cls',
-                crackHitsRequired: 3
-            },
-            { 
-                id: 'epic', 
-                label: 'Epic Egg', 
-                chance: 5, 
-                color: '#7C3AED', 
-                badgeBg: 'bg-purple-50 text-purple-700 border border-purple-200',
-                glowColor: '#C084FC',
-                shakeCls: 'shake-intense-cls',
-                crackHitsRequired: 4
-            },
-            { 
-                id: 'legendary', 
-                label: 'Legendary Egg', 
-                chance: 3, 
-                color: '#D97706', 
-                badgeBg: 'bg-amber-50 text-amber-700 border border-amber-300 font-black',
-                glowColor: '#FBBF24',
-                shakeCls: 'shake-intense-cls',
-                crackHitsRequired: 4
-            },
-            { 
-                id: 'mythic', 
-                label: 'Mythic Egg', 
-                chance: 1.5, 
-                color: '#DB2777', 
-                badgeBg: 'bg-pink-50 text-pink-700 border border-pink-300 font-black',
-                glowColor: '#F472B6',
-                shakeCls: 'shake-intense-cls',
-                crackHitsRequired: 5
-            },
-            { 
-                id: 'malevolous', 
-                label: 'The Malevolous and all-powerful G™ Egg', 
-                chance: 0.5, 
-                color: '#1E3A8A', 
-                badgeBg: 'bg-blue-900 text-white border border-blue-500 font-black animate-pulse',
-                glowColor: '#3B82F6',
-                shakeCls: 'malevolous-tremor-cls',
-                crackHitsRequired: 5
-            }
+        const EGGS = [
+            { id: 'common', name: 'Common Egg', chance: 0.50, color: '#94a3b8', pattern: '#cbd5e1' },
+            { id: 'uncommon', name: 'Uncommon Egg', chance: 0.30, color: '#22c55e', pattern: '#86efac' },
+            { id: 'rare', name: 'Rare Egg', chance: 0.10, color: '#3b82f6', pattern: '#93c5fd' },
+            { id: 'epic', name: 'Epic Egg', chance: 0.05, color: '#a855f7', pattern: '#c084fc' },
+            { id: 'legendary', name: 'Legendary Egg', chance: 0.03, color: '#eab308', pattern: '#fef08a' },
+            { id: 'mythic', name: 'Mythic Egg', chance: 0.015, color: '#ec4899', pattern: '#fbcfe8' },
+            { id: 'malevolous', name: 'The Malevolous G™ Egg', chance: 0.005, color: '#1e1b4b', pattern: '#ef4444' }
         ];
 
-        let inventory = {
-            common: 0,
-            uncommon: 0,
-            rare: 0,
-            epic: 0,
-            legendary: 0,
-            mythic: 0,
-            malevolous: 0
-        };
-
-        let totalSpins = 0;
-        let currentAngle = 0;
+        let inventory = JSON.parse(localStorage.getItem('egg_inventory') || '{}');
+        let currentEgg = null;
         let isSpinning = false;
-        let soundEnabled = true;
-        let lastSegmentIndex = -1;
+        let startAngle = 0;
 
-        let currentHatchEgg = null;
-        let currentCrackHits = 0;
-        let isHatchingActive = false;
-
-        const canvas = document.getElementById('wheelCanvas');
-        const ctx = canvas.getContext('2d');
-        const pointerEl = document.getElementById('wheelPointer');
-
-        let audioCtx = null;
-
-        function initAudio() {
-            if (!audioCtx) {
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-                if (AudioContext) audioCtx = new AudioContext();
-            }
-        }
-
-        function playSound(type) {
-            if (!soundEnabled) return;
-            try {
-                initAudio();
-                if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
-                if (!audioCtx) return;
-
-                const now = audioCtx.currentTime;
-
-                if (type === 'tick') {
-                    const osc = audioCtx.createOscillator();
-                    const gain = audioCtx.createGain();
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(600, now);
-                    osc.frequency.exponentialRampToValueAtTime(150, now + 0.04);
-                    gain.gain.setValueAtTime(0.12, now);
-                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.04);
-                    osc.connect(gain);
-                    gain.connect(audioCtx.destination);
-                    osc.start(now);
-                    osc.stop(now + 0.04);
-                } 
-                else if (type === 'crack') {
-                    const osc = audioCtx.createOscillator();
-                    const gain = audioCtx.createGain();
-                    osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(300 + Math.random() * 120, now);
-                    osc.frequency.exponentialRampToValueAtTime(70, now + 0.08);
-                    gain.gain.setValueAtTime(0.25, now);
-                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
-                    osc.connect(gain);
-                    gain.connect(audioCtx.destination);
-                    osc.start(now);
-                    osc.stop(now + 0.08);
-                } 
-                else if (type === 'pop') {
-                    const osc = audioCtx.createOscillator();
-                    const gain = audioCtx.createGain();
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(350, now);
-                    osc.frequency.exponentialRampToValueAtTime(950, now + 0.15);
-                    gain.gain.setValueAtTime(0.35, now);
-                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
-                    osc.connect(gain);
-                    gain.connect(audioCtx.destination);
-                    osc.start(now);
-                    osc.stop(now + 0.15);
-                }
-                else if (type === 'beam') {
-                    const osc = audioCtx.createOscillator();
-                    const gain = audioCtx.createGain();
-                    osc.type = 'sawtooth';
-                    osc.frequency.setValueAtTime(150, now);
-                    osc.frequency.linearRampToValueAtTime(900, now + 0.5);
-                    gain.gain.setValueAtTime(0.25, now);
-                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
-                    osc.connect(gain);
-                    gain.connect(audioCtx.destination);
-                    osc.start(now);
-                    osc.stop(now + 0.5);
-                }
-            } catch (e) {}
+        function init() {
+            drawWheel();
+            renderInventory();
         }
 
         function drawWheel() {
-            const numSegments = eggData.length;
-            const centerX = canvas.width / 2;
-            const centerY = canvas.height / 2;
-            const radius = canvas.width / 2 - 10;
-            const arcSize = (2 * Math.PI) / numSegments;
+            const canvas = document.getElementById('wheelCanvas');
+            const ctx = canvas.getContext('2d');
+            const numSlices = EGGS.length;
+            const sliceAngle = (2 * Math.PI) / numSlices;
 
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            for (let i = 0; i < numSegments; i++) {
-                const angle = currentAngle + i * arcSize;
-                const egg = eggData[i];
-
+            ctx.clearRect(0, 0, 340, 340);
+            
+            EGGS.forEach((egg, i) => {
+                const angle = startAngle + i * sliceAngle;
                 ctx.beginPath();
-                ctx.arc(centerX, centerY, radius, angle, angle + arcSize);
-                ctx.lineTo(centerX, centerY);
                 ctx.fillStyle = egg.color;
+                ctx.moveTo(170, 170);
+                ctx.arc(170, 170, 160, angle, angle + sliceAngle);
                 ctx.fill();
-
-                ctx.strokeStyle = '#FFFFFF';
-                ctx.lineWidth = 3;
                 ctx.stroke();
 
                 ctx.save();
-                ctx.translate(centerX, centerY);
-                ctx.rotate(angle + arcSize / 2);
-                ctx.textAlign = 'right';
-                ctx.fillStyle = '#FFFFFF';
-                ctx.font = 'bold 12px Inter, sans-serif';
-                ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
-                ctx.shadowBlur = 4;
-
-                let text = egg.label;
-                if (egg.id === 'malevolous') text = 'Malevolous G™';
-
-                ctx.fillText(text, radius - 18, 5);
+                ctx.translate(170, 170);
+                ctx.rotate(angle + sliceAngle / 2);
+                ctx.fillStyle = "#ffffff";
+                ctx.font = "bold 12px sans-serif";
+                ctx.fillText(egg.name.split(' ')[0], 80, 5);
                 ctx.restore();
-            }
-
-            ctx.beginPath();
-            ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-            ctx.strokeStyle = '#2563EB';
-            ctx.lineWidth = 4;
-            ctx.stroke();
+            });
         }
 
-        function getWeightedRandomIndex() {
-            const rand = Math.random() * 100;
-            let cumulative = 0;
+        function renderInventory() {
+            const grid = document.getElementById('eggGrid');
+            grid.innerHTML = '';
+            let unlockedCount = 0;
 
-            for (let i = 0; i < eggData.length; i++) {
-                cumulative += eggData[i].chance;
-                if (rand <= cumulative) {
-                    return i;
-                }
-            }
-            return 0;
+            EGGS.forEach(egg => {
+                const count = inventory[egg.id] || 0;
+                if(count > 0) unlockedCount++;
+
+                const item = document.createElement('div');
+                item.className = `egg-item ${count > 0 ? 'unlocked' : ''}`;
+                item.innerHTML = `
+                    <div class="egg-details">
+                        <div class="egg-name">${egg.name}</div>
+                        <div class="egg-count">Collected: ${count}</div>
+                    </div>
+                `;
+                grid.appendChild(item);
+            });
+
+            document.getElementById('vaultCount').innerText = unlockedCount;
         }
 
         function spinWheel() {
-            if (isSpinning || isHatchingActive) return;
-
-            initAudio();
+            if(isSpinning) return;
             isSpinning = true;
-            document.getElementById('mainSpinBtn').disabled = true;
-            document.getElementById('centerSpinBtn').disabled = true;
+            document.getElementById('spinBtn').disabled = true;
 
-            const targetIndex = getWeightedRandomIndex();
-            const numSegments = eggData.length;
-            const arcSize = (2 * Math.PI) / numSegments;
-            const pointerAngle = (3 * Math.PI / 2);
-            
-            const targetSegmentCenterAngle = (targetIndex * arcSize) + (arcSize / 2);
-            let targetAngle = pointerAngle - targetSegmentCenterAngle;
-            
-            const extraRounds = 6 + Math.floor(Math.random() * 4);
-            const totalRotation = (extraRounds * 2 * Math.PI) + (targetAngle - (currentAngle % (2 * Math.PI)));
+            const rand = Math.random();
+            let cumulative = 0;
+            let selectedEgg = EGGS[0];
 
-            const startAngle = currentAngle;
-            const duration = 5000 + Math.random() * 1000;
-            const startTime = performance.now();
+            for (let egg of EGGS) {
+                cumulative += egg.chance;
+                if (rand <= cumulative) {
+                    selectedEgg = egg;
+                    break;
+                }
+            }
 
-            function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
+            currentEgg = selectedEgg;
 
-            function animateSpin(now) {
-                const elapsed = now - startTime;
-                const progress = Math.min(elapsed / duration, 1);
-                const easedProgress = easeOutCubic(progress);
+            let duration = 3000;
+            let start = null;
 
-                currentAngle = startAngle + totalRotation * easedProgress;
+            function animate(timestamp) {
+                if (!start) start = timestamp;
+                let progress = timestamp - start;
+                startAngle += 0.2 * (1 - progress / duration);
                 drawWheel();
 
-                const currentSegmentIdx = getSegmentAtPointer();
-                if (currentSegmentIdx !== lastSegmentIndex) {
-                    lastSegmentIndex = currentSegmentIdx;
-                    playSound('tick');
-
-                    pointerEl.classList.remove('pointer-tick');
-                    void pointerEl.offsetWidth;
-                    pointerEl.classList.add('pointer-tick');
-                }
-
-                if (progress < 1) {
-                    requestAnimationFrame(animateSpin);
+                if (progress < duration) {
+                    requestAnimationFrame(animate);
                 } else {
                     isSpinning = false;
-                    document.getElementById('mainSpinBtn').disabled = false;
-                    document.getElementById('centerSpinBtn').disabled = false;
-
-                    totalSpins++;
-                    document.getElementById('totalSpinsCount').innerText = `Spins: ${totalSpins}`;
-
-                    const winningEgg = eggData[targetIndex];
-                    startHatchCutscene(winningEgg);
+                    document.getElementById('spinBtn').disabled = false;
+                    showHatchModal();
                 }
             }
-
-            requestAnimationFrame(animateSpin);
+            requestAnimationFrame(animate);
         }
 
-        function getSegmentAtPointer() {
-            const numSegments = eggData.length;
-            const arcSize = (2 * Math.PI) / numSegments;
-            const pointerAngle = (3 * Math.PI / 2);
-
-            let normalizedAngle = (pointerAngle - (currentAngle % (2 * Math.PI))) % (2 * Math.PI);
-            if (normalizedAngle < 0) normalizedAngle += 2 * Math.PI;
-
-            return Math.floor(normalizedAngle / arcSize) % numSegments;
+        function showHatchModal() {
+            document.getElementById('modalTitle').innerText = "Egg Found!";
+            document.getElementById('hatchPrompt').style.display = 'block';
+            document.getElementById('claimBtn').style.display = 'none';
+            document.getElementById('hatchModal').classList.add('active');
+            drawHatchEgg(currentEgg.color);
         }
 
-        function getEggSvgMarkup(eggId, isCracked = false) {
-            let patterns = '';
+        function drawHatchEgg(color) {
+            const canvas = document.getElementById('hatchCanvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, 120, 160);
+
+            ctx.beginPath();
+            ctx.fillStyle = color;
+            ctx.ellipse(60, 80, 45, 65, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = '#0f172a';
+            ctx.stroke();
+        }
+
+        function hatchEgg() {
+            inventory[currentEgg.id] = (inventory[currentEgg.id] || 0) + 1;
+            localStorage.setItem('egg_inventory', JSON.stringify(inventory));
             
-            if (eggId === 'uncommon') {
-                patterns = `<path d="M25,60 Q50,40 75,60 T125,60" stroke="#93C5FD" stroke-width="6" fill="none" opacity="0.8"/>`;
-            } else if (eggId === 'rare') {
-                patterns = `<polygon points="50,30 65,55 35,55" fill="#38BDF8" opacity="0.8"/>
-                            <polygon points="100,70 115,95 85,95" fill="#38BDF8" opacity="0.8"/>`;
-            } else if (eggId === 'epic') {
-                patterns = `<circle cx="75" cy="75" r="25" fill="none" stroke="#E9D5FF" stroke-width="5" stroke-dasharray="10,5"/>`;
-            } else if (eggId === 'legendary') {
-                patterns = `<path d="M75,20 L85,40 L105,40 L90,52 L95,72 L75,60 L55,72 L60,52 L45,40 L65,40 Z" fill="#FDE047"/>`;
-            } else if (eggId === 'mythic') {
-                patterns = `<ellipse cx="75" cy="75" rx="35" ry="15" fill="none" stroke="#F472B6" stroke-width="4" transform="rotate(-30 75 75)"/>`;
-            } else if (eggId === 'malevolous') {
-                patterns = `<path d="M45,55 Q75,30 105,55 Q75,100 45,55 Z" fill="#1E3A8A"/>
-                            <circle cx="75" cy="60" r="9" fill="#60A5FA"/>`;
-            }
-
-            let crackLines = '';
-            if (isCracked) {
-                crackLines = `<path d="M75,20 L70,45 L82,65 L68,90 L75,120" stroke="#FFFFFF" stroke-width="4" fill="none" stroke-linecap="round"/>`;
-            }
-
-            return `
-                <svg viewBox="0 0 150 180" class="w-full h-full">
-                    <defs>
-                        <linearGradient id="eggGrad_${eggId}" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stop-color="${getEggGradientStops(eggId)[0]}" />
-                            <stop offset="100%" stop-color="${getEggGradientStops(eggId)[1]}" />
-                        </linearGradient>
-                    </defs>
-                    <path d="M75,10 C120,10 140,70 140,115 C140,155 110,170 75,170 C40,170 10,155 10,115 C10,70 30,10 75,10 Z" 
-                          fill="url(#eggGrad_${eggId})" stroke="rgba(255,255,255,0.6)" stroke-width="4"/>
-                    ${patterns}
-                    ${crackLines}
-                </svg>
-            `;
-        }
-
-        function getEggGradientStops(eggId) {
-            switch(eggId) {
-                case 'common': return ['#E2E8F0', '#94A3B8'];
-                case 'uncommon': return ['#60A5FA', '#1D4ED8'];
-                case 'rare': return ['#38BDF8', '#0369A1'];
-                case 'epic': return ['#C084FC', '#6B21A8'];
-                case 'legendary': return ['#FBBF24', '#B45309'];
-                case 'mythic': return ['#F472B6', '#9D174D'];
-                case 'malevolous': return ['#3B82F6', '#1E3A8A'];
-                default: return ['#E2E8F0', '#94A3B8'];
-            }
-        }
-
-        function startHatchCutscene(egg) {
-            currentHatchEgg = egg;
-            currentCrackHits = 0;
-            isHatchingActive = true;
-
-            const modal = document.getElementById('hatchCutsceneModal');
-            const eggStage = document.getElementById('eggStageContainer');
-            const revealCard = document.getElementById('revealCardContainer');
-            const godGlitch = document.getElementById('godGlitchOverlay');
-            const bgGlow = document.getElementById('eggBackGlow');
-
-            modal.classList.remove('hidden');
-            eggStage.classList.remove('hidden');
-            revealCard.classList.add('hidden');
-            revealCard.classList.remove('scale-100', 'opacity-100');
-            revealCard.classList.add('scale-90', 'opacity-0');
-            godGlitch.classList.add('hidden');
-
-            document.getElementById('crackProgressBar').style.width = '0%';
-            document.getElementById('hatchStatusText').innerText = "✨ TAP EGG TO CRACK OPEN ✨";
-
-            bgGlow.style.backgroundColor = egg.glowColor;
-            document.getElementById('eggSvgHolder').innerHTML = getEggSvgMarkup(egg.id, false);
-
-            if (egg.id === 'malevolous') {
-                godGlitch.classList.remove('hidden');
-            }
-
-            eggStage.onclick = processEggCrackTap;
-        }
-
-        function processEggCrackTap() {
-            if (!currentHatchEgg || currentCrackHits >= currentHatchEgg.crackHitsRequired) return;
-
-            currentCrackHits++;
-            playSound('crack');
-
-            const progressPct = (currentCrackHits / currentHatchEgg.crackHitsRequired) * 100;
-            document.getElementById('crackProgressBar').style.width = `${progressPct}%`;
-
-            const eggVisualFrame = document.getElementById('eggVisualFrame');
-            eggVisualFrame.className = `relative w-48 h-56 sm:w-60 sm:h-72 flex items-center justify-center transition-transform ${currentHatchEgg.shakeCls}`;
-
-            document.getElementById('eggSvgHolder').innerHTML = getEggSvgMarkup(currentHatchEgg.id, true);
-            spawnCrackParticles(currentHatchEgg.color);
-
-            if (currentCrackHits >= currentHatchEgg.crackHitsRequired) {
-                document.getElementById('hatchStatusText').innerText = "💥 HATCHING! 💥";
-                setTimeout(() => {
-                    executeFinalHatchBurst();
-                }, 350);
-            }
-        }
-
-        function executeFinalHatchBurst() {
-            playSound('pop');
-
-            if (currentHatchEgg.id === 'legendary' || currentHatchEgg.id === 'mythic' || currentHatchEgg.id === 'malevolous') {
-                playSound('beam');
-            }
-
-            inventory[currentHatchEgg.id]++;
-            checkSetCompletionStatus();
-
-            startTierParticleEffect(currentHatchEgg);
-
-            document.getElementById('eggStageContainer').classList.add('hidden');
-
-            const revealCard = document.getElementById('revealCardContainer');
-            revealCard.classList.remove('hidden');
-
-            setTimeout(() => {
-                revealCard.classList.remove('scale-90', 'opacity-0');
-                revealCard.classList.add('scale-100', 'opacity-100');
-            }, 50);
-
-            document.getElementById('revealedEggIcon').innerHTML = getEggSvgMarkup(currentHatchEgg.id, false);
-            document.getElementById('revealTitleText').innerText = currentHatchEgg.label;
-            document.getElementById('revealChanceText').innerText = `Drop Odds: ${currentHatchEgg.chance}%`;
+            document.getElementById('modalTitle').innerText = `Hatched: ${currentEgg.name}!`;
+            document.getElementById('hatchPrompt').style.display = 'none';
+            document.getElementById('claimBtn').style.display = 'inline-block';
             
-            const badge = document.getElementById('revealRarityBadge');
-            badge.className = `inline-block text-[11px] font-black font-orbitron uppercase tracking-widest px-3 py-1 rounded-full mb-2 ${currentHatchEgg.badgeBg}`;
-            badge.innerText = currentHatchEgg.id.toUpperCase();
-
-            document.getElementById('revealHeaderGlow').style.backgroundColor = currentHatchEgg.glowColor;
+            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+            renderInventory();
         }
 
-        function closeHatchCutscene() {
-            document.getElementById('hatchCutsceneModal').classList.add('hidden');
-            stopTierParticleEffect();
-            isHatchingActive = false;
+        function closeModal() {
+            document.getElementById('hatchModal').classList.remove('active');
         }
 
-        let fxAnimationId = null;
-        const fxCanvas = document.getElementById('hatchFxCanvas');
-        const fCtx = fxCanvas.getContext('2d');
-        let fxParticles = [];
-
-        function spawnCrackParticles(color) {
-            fxCanvas.width = window.innerWidth;
-            fxCanvas.height = window.innerHeight;
-
-            for (let i = 0; i < 12; i++) {
-                fxParticles.push({
-                    x: fxCanvas.width / 2,
-                    y: fxCanvas.height / 2,
-                    vx: (Math.random() - 0.5) * 10,
-                    vy: (Math.random() - 0.5) * 10,
-                    size: Math.random() * 5 + 2,
-                    color: color,
-                    alpha: 1
-                });
-            }
-        }
-
-        function startTierParticleEffect(egg) {
-            fxCanvas.width = window.innerWidth;
-            fxCanvas.height = window.innerHeight;
-            fxParticles = [];
-
-            const count = egg.id === 'malevolous' ? 200 : 100;
-            const colors = [egg.color, '#FFFFFF', '#60A5FA', '#93C5FD'];
-
-            for (let i = 0; i < count; i++) {
-                const angle = Math.random() * Math.PI * 2;
-                const speed = Math.random() * 16 + 3;
-                fxParticles.push({
-                    x: fxCanvas.width / 2,
-                    y: fxCanvas.height / 2,
-                    vx: Math.cos(angle) * speed,
-                    vy: Math.sin(angle) * speed,
-                    size: Math.random() * 7 + 3,
-                    color: colors[Math.floor(Math.random() * colors.length)],
-                    alpha: 1,
-                    decay: Math.random() * 0.015 + 0.008
-                });
-            }
-
-            function renderFX() {
-                fCtx.clearRect(0, 0, fxCanvas.width, fxCanvas.height);
-
-                fxParticles.forEach((p) => {
-                    p.x += p.vx;
-                    p.y += p.vy;
-                    p.alpha -= p.decay;
-
-                    if (p.alpha > 0) {
-                        fCtx.save();
-                        fCtx.globalAlpha = p.alpha;
-                        fCtx.fillStyle = p.color;
-                        fCtx.beginPath();
-                        fCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                        fCtx.fill();
-                        fCtx.restore();
-                    }
-                });
-
-                fxParticles = fxParticles.filter(p => p.alpha > 0);
-
-                if (fxParticles.length > 0) {
-                    fxAnimationId = requestAnimationFrame(renderFX);
-                }
-            }
-
-            renderFX();
-        }
-
-        function stopTierParticleEffect() {
-            if (fxAnimationId) cancelAnimationFrame(fxAnimationId);
-            fCtx.clearRect(0, 0, fxCanvas.width, fxCanvas.height);
-        }
-
-        function renderOddsList() {
-            const container = document.getElementById('oddsList');
-            container.innerHTML = '';
-
-            eggData.forEach((egg) => {
-                const item = document.createElement('div');
-                item.className = 'flex items-center justify-between p-2 rounded-xl bg-white border border-slate-200 shadow-sm';
-                item.innerHTML = `
-                    <div class="flex items-center space-x-2">
-                        <div class="w-6 h-7">${getEggSvgMarkup(egg.id, false)}</div>
-                        <span class="text-xs font-bold text-slate-700">${egg.label}</span>
-                    </div>
-                    <span class="text-xs font-black px-2 py-0.5 rounded-lg ${egg.badgeBg}">${egg.chance}%</span>
-                `;
-                container.appendChild(item);
-            });
-        }
-
-        function checkSetCompletionStatus() {
-            const uniqueTypes = Object.keys(inventory).filter(key => inventory[key] > 0).length;
-            document.getElementById('collectionBadge').innerText = `${uniqueTypes}/7`;
-
-            if (uniqueTypes >= 7) {
-                document.getElementById('setCompletedBanner').classList.remove('hidden');
-            }
-        }
-
-        function renderInventoryGrid() {
-            const grid = document.getElementById('inventoryGrid');
-            grid.innerHTML = '';
-
-            let uniqueUnlocked = 0;
-
-            eggData.forEach((egg) => {
-                const count = inventory[egg.id];
-                if (count > 0) uniqueUnlocked++;
-
-                const card = document.createElement('div');
-                card.className = `p-3 rounded-2xl bg-slate-50 border ${count > 0 ? 'border-blue-300 shadow-sm' : 'border-slate-200 opacity-50'} flex flex-col items-center text-center relative overflow-hidden`;
-
-                card.innerHTML = `
-                    <div class="w-12 h-14 mb-1">${getEggSvgMarkup(egg.id, false)}</div>
-                    <span class="text-[11px] font-bold text-slate-800 mb-1 leading-tight line-clamp-2">${egg.label}</span>
-                    <span class="text-[10px] font-semibold text-slate-500 mb-2">${egg.chance}% Drop</span>
-                    <span class="mt-auto text-xs font-black px-2.5 py-0.5 rounded-full ${egg.badgeBg}">x${count}</span>
-                `;
-                grid.appendChild(card);
-            });
-
-            document.getElementById('totalHatchedText').innerText = `Unique Unlocked: ${uniqueUnlocked}/7`;
-        }
-
-        function toggleInventoryModal() {
-            const modal = document.getElementById('inventoryModal');
-            modal.classList.toggle('hidden');
-            if (!modal.classList.contains('hidden')) {
-                renderInventoryGrid();
-            }
-        }
-
-        function openRulesModal() {
-            const modal = document.getElementById('rulesModal');
-            modal.classList.toggle('hidden');
-        }
-
-        function toggleSound() {
-            soundEnabled = !soundEnabled;
-            const icon = document.getElementById('soundIcon');
-            icon.className = soundEnabled ? 'fas fa-volume-up text-blue-600 w-5' : 'fas fa-volume-mute text-slate-400 w-5';
-        }
-
-        window.onload = function() {
-            drawWheel();
-            renderOddsList();
-            checkSetCompletionStatus();
-
-            window.addEventListener('resize', () => {
-                drawWheel();
-            });
-        };
+        init();
     </script>
 </body>
 </html>
